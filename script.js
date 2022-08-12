@@ -5,11 +5,13 @@
 let count = 0;
 
 function regist() {
-	let input = document.getElementById("todo-input").value;
+	let inputElem = document.getElementById("todo-input");
 	
-	let todoDivElem = createToDo(input);
+	let todoDivElem = createToDo(inputElem.value);
 	let todoListElem = document.getElementById("todo-list");
 	todoListElem.prepend(todoDivElem);
+	
+	inputElem.value = "";
 }
 
 function createToDo(input) {
@@ -33,7 +35,7 @@ function createToDo(input) {
 
 function check(elem, id) {
 	if (elem.checked) {
-		document.getElementById(id).setAttribute("style", "text-decoration: line-through;");
+		document.getElementById(id).setAttribute("style", "text-decoration: line-through; opacity: 0.3;");
 	} else {
 		document.getElementById(id).removeAttribute("style");
 	}
