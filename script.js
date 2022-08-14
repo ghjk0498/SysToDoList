@@ -12,6 +12,7 @@ function regist() {
 	todoListElem.prepend(todoDivElem);
 	
 	inputElem.value = "";
+	inputElem.focus();
 }
 
 function createToDo(input) {
@@ -21,21 +22,22 @@ function createToDo(input) {
 	checkboxElem = document.createElement("input");
 	checkboxElem.setAttribute("type", "checkbox");
 	checkboxElem.setAttribute("onclick", "check(this, 'text" + count + "')");
-	spanElem = document.createElement("span");
-	spanElem.setAttribute("class", "text");
-	spanElem.setAttribute("id", "text" + count);
+	textareaElem = document.createElement("textarea");
+	textareaElem.setAttribute("readonly", true);
+	textareaElem.setAttribute("class", "text");
+	textareaElem.setAttribute("id", "text" + count);
 	count += 1;
-	spanElem.innerText = input;
+	textareaElem.innerText = input;
 	
 	todoDivElem.append(checkboxElem);
-	todoDivElem.append(spanElem);
+	todoDivElem.append(textareaElem);
 	
 	return todoDivElem;
 }
 
 function check(elem, id) {
 	if (elem.checked) {
-		document.getElementById(id).setAttribute("style", "text-decoration: line-through; opacity: 0.3;");
+		document.getElementById(id).setAttribute("style", "text-decoration: line-through; opacity: 0.5;");
 	} else {
 		document.getElementById(id).removeAttribute("style");
 	}
