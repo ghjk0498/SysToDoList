@@ -1,8 +1,19 @@
-/*
-	로컬스토리지에 todo 정보 남길것
-*/
-
 let count = 0;
+let todoList = [];
+
+window.onload = function() {
+	todoList = JSON.parse(localStorage.getItem("todoList"));
+	
+	if (!todoList) {
+		todoList = [];
+		localStorage.setItem("todoList", JSON.stringify(todoList));
+	}
+	
+	let todoListElem = document.getElementById("todo-list");
+	for (let todo of todoList) {
+		todoListElem.append(createTodoElement(todo))
+	}
+}
 
 function regist() {
 	let inputElem = document.getElementById("todo-input");
@@ -15,7 +26,15 @@ function regist() {
 	inputElem.focus();
 }
 
+// window.onload에서 todo 목록을 초기화하는 과정에서 todoList에 추가하지 않고 element만 만들기 위해 분리함.
+// createToDo(input) : todoList에 추가하고 element 생성
+// createToDoElement(input) : element만 생성
 function createToDo(input) {
+	todoList.unshift(input);
+	localStorage.setItem("todoList", JSON.stringify(todoList));
+	return createTodoElement(input);
+}
+function createTodoElement(input) {
 	todoDivElem = document.createElement("div");
 	todoDivElem.setAttribute("class", "todo");
 	
@@ -27,7 +46,7 @@ function createToDo(input) {
 	textareaElem.setAttribute("class", "text");
 	textareaElem.setAttribute("id", "text" + count);
 	count += 1;
-	textareaElem.innerText = input;
+	textareaElem.value = input;
 	
 	todoDivElem.append(checkboxElem);
 	todoDivElem.append(textareaElem);
@@ -41,4 +60,25 @@ function check(elem, id) {
 	} else {
 		document.getElementById(id).removeAttribute("style");
 	}
+}
+
+function deleteTodo() {
+	let todoListElem = document.getElementById("todo-list");
+	let removeList = [];
+	for (let elem of todoListElem.childNodes) {
+		if (elem.firstChild && elem.firstChild.checked) {
+			removeList.push(elem);
+		}
+	}
+	while (removeList.length != 0) {
+		removeList.pop().remove();
+	}
+	
+	todoList = [];
+	for (let elem of todoListElem.childNodes) {
+		if (elem.lastChild) {
+			todoList.push(elem.lastChild.value);
+		}
+	}
+	localStorage.setItem("todoList", JSON.stringify(todoList));
 }
