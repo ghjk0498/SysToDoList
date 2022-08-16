@@ -4,16 +4,13 @@ let currentFocusTodo = null;
 
 window.onload = function() {
 	todoList = JSON.parse(localStorage.getItem("todoList"));
-	
-	if (!todoList) {
-		todoList = [];
-		localStorage.setItem("todoList", JSON.stringify(todoList));
-		count = todoList[0].id;
-	}
-	
+
 	let todoListElem = document.getElementById("todo-list");
 	for (let todo of todoList) {
 		todoListElem.append(createTodo(todo.value, todo.id).elem)
+	}
+	if (todoList.length != 0) {
+		count = Number(todoList[0].id.split("-")[1]);
 	}
 }
 
@@ -56,14 +53,15 @@ function createTodo(input, id) {
 	textareaElem = document.createElement("textarea");
 	textareaElem.setAttribute("readonly", true);
 	textareaElem.setAttribute("class", "text");
+	let textareaId;
 	if (id) {
-		textareaElem.setAttribute("id", id);
-		checkboxElem.setAttribute("onclick", "check(this, '" + id + "')");
+		textareaId = id;
 	} else {
 		count += 1;
-		textareaElem.setAttribute("id", "text" + count);
-		checkboxElem.setAttribute("onclick", "check(this, 'text" + count + "')");
+		textareaId = "text-" + count;
 	}
+	textareaElem.setAttribute("id", textareaId);
+	checkboxElem.setAttribute("onclick", "check(this, '" + textareaId + "')");
 	textareaElem.addEventListener("click", onTodoClick);
 	textareaElem.value = input;
 	
@@ -73,7 +71,7 @@ function createTodo(input, id) {
 	// [return value] : todoDivElement, textarea.id
 	return {
 		"elem" : todoDivElem,
-		"id" : "text"+count
+		"id" : textareaId,
 	};
 }
 
