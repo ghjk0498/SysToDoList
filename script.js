@@ -92,7 +92,7 @@ function onTodoClick(e) {
 			document.getElementById(currentFocusTodo).style.border = "1px solid black";
 		}
 		currentFocusTodo = e.target.id;
-		e.target.style.border = "2px solid black";
+		e.target.style.border = "2px solid red";
 		inputElem.value = e.target.value;
 	}
 }
