@@ -7,7 +7,7 @@ window.onload = function() {
 
 	let todoListElem = document.getElementById("todo-list");
 	for (let todo of todoList) {
-		todoListElem.append(createTodo(todo.value, todo.id).elem)
+		todoListElem.append(createTodo(todo.value, todo.id, todo.checked).elem)
 	}
 	if (todoList.length != 0) {
 		count = Number(todoList[0].id.split("-")[1]);
@@ -34,7 +34,8 @@ function regist() {
 		
 		let todo = {
 			"id" : todoElemAndId.id,
-			"value" : inputElem.value
+			"value" : inputElem.value,
+			"checked" : false,
 		}
 		todoList.unshift(todo);
 		localStorage.setItem("todoList", JSON.stringify(todoList));
@@ -44,15 +45,18 @@ function regist() {
 	}
 }
 
-function createTodo(input, id) {
+function createTodo(input, id, checked=false) {
 	todoDivElem = document.createElement("div");
 	todoDivElem.setAttribute("class", "todo");
 	
 	checkboxElem = document.createElement("input");
 	checkboxElem.setAttribute("type", "checkbox");
+	checkboxElem.checked = checked;
+	
 	textareaElem = document.createElement("textarea");
 	textareaElem.setAttribute("readonly", true);
 	textareaElem.setAttribute("class", "text");
+	
 	let textareaId;
 	if (id) {
 		textareaId = id;
@@ -62,8 +66,13 @@ function createTodo(input, id) {
 	}
 	textareaElem.setAttribute("id", textareaId);
 	checkboxElem.setAttribute("onclick", "check(this, '" + textareaId + "')");
+	
 	textareaElem.addEventListener("click", onTodoClick);
 	textareaElem.value = input;
+	
+	if (checked) {
+		textareaElem.setAttribute("style", "text-decoration: line-through; opacity: 0.5;");
+	}
 	
 	todoDivElem.append(checkboxElem);
 	todoDivElem.append(textareaElem);
@@ -93,11 +102,19 @@ function onTodoClick(e) {
 }
 
 function check(elem, id) {
-	if (elem.checked) {
-		document.getElementById(id).setAttribute("style", "text-decoration: line-through; opacity: 0.5;");
-	} else {
-		document.getElementById(id).removeAttribute("style");
+	for (let todo of todoList) {
+		if (id === todo.id) {
+			if (elem.checked) {
+				document.getElementById(id).setAttribute("style", "text-decoration: line-through; opacity: 0.5;");
+				todo.checked = true;
+			} else {
+				document.getElementById(id).removeAttribute("style");
+				todo.checked = false;
+			}
+			break;
+		}
 	}
+	localStorage.setItem("todoList", JSON.stringify(todoList));
 }
 
 function deleteTodo() {
@@ -117,7 +134,8 @@ function deleteTodo() {
 		if (elem.lastChild) {
 			todoList.push({
 				"id" : elem.lastChild.id,
-				"value" : elem.lastChild.value
+				"value" : elem.lastChild.value,
+				"checked" : elem.firstChild.checked,
 			});
 		}
 	}
