@@ -1,5 +1,6 @@
 let count = 0;
 let todoList = [];
+let currentFocusTodo = null;
 
 window.onload = function() {
 	todoList = JSON.parse(localStorage.getItem("todoList"));
@@ -7,34 +8,46 @@ window.onload = function() {
 	if (!todoList) {
 		todoList = [];
 		localStorage.setItem("todoList", JSON.stringify(todoList));
+		count = todoList[0].id;
 	}
 	
 	let todoListElem = document.getElementById("todo-list");
 	for (let todo of todoList) {
-		todoListElem.append(createTodoElement(todo))
+		todoListElem.append(createTodo(todo.value, todo.id).elem)
 	}
 }
 
 function regist() {
 	let inputElem = document.getElementById("todo-input");
 	
-	let todoDivElem = createToDo(inputElem.value);
-	let todoListElem = document.getElementById("todo-list");
-	todoListElem.prepend(todoDivElem);
-	
-	inputElem.value = "";
-	inputElem.focus();
+	if (currentFocusTodo) {
+		document.getElementById(currentFocusTodo).value = inputElem.value;
+		
+		for (let todo of todoList) {
+			if (todo.id === currentFocusTodo) {
+				todo.value = inputElem.value;
+			}
+		}
+		localStorage.setItem("todoList", JSON.stringify(todoList));
+	} else {
+		let todoElemAndId = createTodo(inputElem.value);
+		let todoDivElem = todoElemAndId.elem;
+		let todoListElem = document.getElementById("todo-list");
+		todoListElem.prepend(todoDivElem);
+		
+		let todo = {
+			"id" : todoElemAndId.id,
+			"value" : inputElem.value
+		}
+		todoList.unshift(todo);
+		localStorage.setItem("todoList", JSON.stringify(todoList));
+		
+		inputElem.value = "";
+		inputElem.focus();
+	}
 }
 
-// window.onload에서 todo 목록을 초기화하는 과정에서 todoList에 추가하지 않고 element만 만들기 위해 분리함.
-// createToDo(input) : todoList에 추가하고 element 생성
-// createToDoElement(input) : element만 생성
-function createToDo(input) {
-	todoList.unshift(input);
-	localStorage.setItem("todoList", JSON.stringify(todoList));
-	return createTodoElement(input);
-}
-function createTodoElement(input) {
+function createTodo(input, id) {
 	todoDivElem = document.createElement("div");
 	todoDivElem.setAttribute("class", "todo");
 	
@@ -44,14 +57,40 @@ function createTodoElement(input) {
 	textareaElem = document.createElement("textarea");
 	textareaElem.setAttribute("readonly", true);
 	textareaElem.setAttribute("class", "text");
-	textareaElem.setAttribute("id", "text" + count);
-	count += 1;
+	if (id) {
+		textareaElem.setAttribute("id", id);
+	} else {
+		count += 1;
+		textareaElem.setAttribute("id", "text" + count);
+	}
+	textareaElem.addEventListener("click", onTodoClick);
 	textareaElem.value = input;
 	
 	todoDivElem.append(checkboxElem);
 	todoDivElem.append(textareaElem);
 	
-	return todoDivElem;
+	// [return value] : todoDivElement, textarea.id
+	return {
+		"elem" : todoDivElem,
+		"id" : "text"+count
+	};
+}
+
+function onTodoClick(e) {
+	let inputElem = document.getElementById("todo-input");
+	
+	if (currentFocusTodo === e.target.id) {
+		currentFocusTodo = null;
+		e.target.style.border = "1px solid black";
+		inputElem.value = "";
+	} else {
+		if (currentFocusTodo) {
+			document.getElementById(currentFocusTodo).style.border = "1px solid black";
+		}
+		currentFocusTodo = e.target.id;
+		e.target.style.border = "2px solid black";
+		inputElem.value = e.target.value;
+	}
 }
 
 function check(elem, id) {
@@ -77,7 +116,10 @@ function deleteTodo() {
 	todoList = [];
 	for (let elem of todoListElem.childNodes) {
 		if (elem.lastChild) {
-			todoList.push(elem.lastChild.value);
+			todoList.push({
+				"id" : elem.lastChild.id,
+				"value" : elem.lastChild.value
+			});
 		}
 	}
 	localStorage.setItem("todoList", JSON.stringify(todoList));
