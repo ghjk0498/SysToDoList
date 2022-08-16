@@ -70,10 +70,6 @@ function createTodo(input, id, checked=false) {
 	textareaElem.addEventListener("click", onTodoClick);
 	textareaElem.value = input;
 	
-	if (checked) {
-		textareaElem.setAttribute("style", "text-decoration: line-through; opacity: 0.5;");
-	}
-	
 	todoDivElem.append(checkboxElem);
 	todoDivElem.append(textareaElem);
 	
@@ -105,10 +101,8 @@ function check(elem, id) {
 	for (let todo of todoList) {
 		if (id === todo.id) {
 			if (elem.checked) {
-				document.getElementById(id).setAttribute("style", "text-decoration: line-through; opacity: 0.5;");
 				todo.checked = true;
 			} else {
-				document.getElementById(id).removeAttribute("style");
 				todo.checked = false;
 			}
 			break;
