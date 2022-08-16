@@ -53,15 +53,16 @@ function createTodo(input, id) {
 	
 	checkboxElem = document.createElement("input");
 	checkboxElem.setAttribute("type", "checkbox");
-	checkboxElem.setAttribute("onclick", "check(this, 'text" + count + "')");
 	textareaElem = document.createElement("textarea");
 	textareaElem.setAttribute("readonly", true);
 	textareaElem.setAttribute("class", "text");
 	if (id) {
 		textareaElem.setAttribute("id", id);
+		checkboxElem.setAttribute("onclick", "check(this, '" + id + "')");
 	} else {
 		count += 1;
 		textareaElem.setAttribute("id", "text" + count);
+		checkboxElem.setAttribute("onclick", "check(this, 'text" + count + "')");
 	}
 	textareaElem.addEventListener("click", onTodoClick);
 	textareaElem.value = input;
