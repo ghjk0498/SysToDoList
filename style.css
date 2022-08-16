@@ -5,13 +5,13 @@
 	background-color: #e2e2e2;
 	border: 1px solid black;
 	width: 500px;
-	height: 100px;
+	height: 14vh;
 	padding: 5px;
 }
 
 .regist-div > textarea {
 	width: 430px;
-	height: 90px;
+	height: 12vh;
 	resize: none;
 	margin-right: 10px;
 }
@@ -24,8 +24,9 @@
 	background-color: #e2e2e2;
 	border: 1px solid black;
 	width: 500px;
-	height: 500px;
+	height: 64vh;
 	padding: 5px;
+	overflow-y: scroll;
 }
 
 .todo-list-div > div {
@@ -45,5 +46,5 @@
 	border: 1px solid black;
 	outline: none;
 	width: 490px;
-	height: 40px;
+	height: 7.7vh;
 }
