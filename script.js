@@ -5,12 +5,16 @@ let currentFocusTodo = null;
 window.onload = function() {
 	todoList = JSON.parse(localStorage.getItem("todoList"));
 
-	let todoListElem = document.getElementById("todo-list");
-	for (let todo of todoList) {
-		todoListElem.append(createTodo(todo.value, todo.id, todo.checked).elem)
-	}
-	if (todoList.length != 0) {
-		count = Number(todoList[0].id.split("-")[1]);
+	if (todoList) {
+		let todoListElem = document.getElementById("todo-list");
+		for (let todo of todoList) {
+			todoListElem.append(createTodo(todo.value, todo.id, todo.checked).elem)
+		}
+		if (todoList.length != 0) {
+			count = Number(todoList[0].id.split("-")[1]);
+		}
+	} else {
+		todoList = [];
 	}
 }
 
